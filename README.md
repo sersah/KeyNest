@@ -32,9 +32,9 @@ Generate secure passwords and store them in an offline encrypted file!
 
 Generator/Main view | KeyManager login view
 :-------------------------:|:-------------------------:
-![](https://i.gyazo.com/71ba05bf8026ccd2aeb1a338f83c79a6.png)  |  ![](https://i.gyazo.com/0ad900ecb815aec1acbc0468665f6f81.png)
+![Preview](screenshots/GUImain.PNG)  |  ![Preview](screenshots/KeyManagerLogin.PNG)
 
 
 KeyManager view (passwords hidden) | KeyManager view (passwords shown)
 :-------------------------:|:-------------------------:
-![](https://i.gyazo.com/0a946a5235503c83cf32a3cf36524398.png)  |  ![](https://i.gyazo.com/72ed7288477ce448084e46b0fdf76598.png)
+![Preview](screenshots/KeyManagerNOPW.PNG)  |  ![Preview](screenshots/KeyManagerPW.PNG)
