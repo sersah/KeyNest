@@ -7,23 +7,23 @@ Generate secure passwords and store them in an offline encrypted file!
 **Features  ✨**
 ---------
 - Customizable Password Length
-- **Optional Character Types**:  
+- **Configurable Character Types**:  
   - Special characters (e.g., `@`, `#`, `!`)  
   - Uppercase letters (e.g., `A`, `B`, `C`)  
   - Lowercase letters (e.g., `a`, `b`, `c`)  
-  - Digits (e.g., `0`, `1`, `2`)
+  - Digits (e.g., `0-9`)
 
-- Create an offline encrypted database to store your accounts data securely
-- Choose a Master Password to create and encrypt the entire database
-- Easily add, edit and remove the accounts
-
+- **Offline Encrypted Vault**: Stores credentials locally in an AES-encrypted database file (`~/keyholder`).
+- **Master Password Protection**: Derives a 128-bit AES key from the user's master password via `SHA-256`.
+- **Full CRUD Management**: Add, edit, sort, and remove saved accounts with toggleable password visibility.
 
 
 **Specification ⚙️**
 --------
-- Strong, random password generator using `SecureRandom`
+- Cryptographically strong password generation using `SecureRandom`
+- SHA-256 message digest for master key derivation `SecretKeySpec`
 - GUI developed with JavaFX SceneBuilder
-- AES encryption
+- AES for vault encryption
 - CSV database format
 - Maven support for dependencies and automation
 
@@ -38,3 +38,11 @@ Generator/Main view | KeyManager login view
 KeyManager view (passwords hidden) | KeyManager view (passwords shown)
 :-------------------------:|:-------------------------:
 ![Preview](screenshots/KeyManagerNOPW.PNG)  |  ![Preview](screenshots/KeyManagerPW.PNG)
+
+---
+
+## 🔄 Flow Diagram
+
+![Flow Diagram](screenshots/flow_diagram.svg)
+
+---
