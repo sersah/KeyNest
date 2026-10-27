@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <!-- Arrowhead marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#e6edf3"/>
+    </marker>
+    <marker id="arrow-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#b0bac6"/>
+    </marker>
+  </defs>
+
+  <!-- Background (GitHub dark theme compatible & readable on light mode too) -->
+  <rect x="0" y="0" width="1200" height="760" rx="14" fill="#0d1117"/>
+
+  <!-- ===================== 1. App ===================== -->
+  <text x="30" y="38" fill="#e6edf3" font-size="16" font-weight="500">App</text>
+  <rect x="30" y="48" width="210" height="120" fill="none" stroke="#8b949e" stroke-width="2"/>
+  <rect x="55" y="73" width="160" height="70" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="135" y="113" fill="#e6edf3" font-size="15" text-anchor="middle">start()</text>
+
+  <!-- ===================== 2. GeneratorController ===================== -->
+  <text x="30" y="218" fill="#e6edf3" font-size="16" font-weight="500">GeneratorController</text>
+  <rect x="30" y="228" width="210" height="220" fill="none" stroke="#00bcd4" stroke-width="2"/>
+  
+  <rect x="45" y="250" width="180" height="52" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="135" y="281" fill="#e6edf3" font-size="14" text-anchor="middle">buttonGenerate()</text>
+
+  <rect x="45" y="316" width="180" height="52" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="135" y="347" fill="#e6edf3" font-size="14" text-anchor="middle">switchKeyManagerLogin()</text>
+
+  <rect x="45" y="382" width="180" height="52" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="135" y="413" fill="#e6edf3" font-size="14" text-anchor="middle">switchKeyManager()</text>
+
+  <!-- ===================== 3. LoginController ===================== -->
+  <text x="295" y="158" fill="#e6edf3" font-size="16" font-weight="500">LoginController</text>
+  <rect x="295" y="168" width="210" height="230" fill="none" stroke="#a855f7" stroke-width="2"/>
+
+  <rect x="320" y="195" width="160" height="75" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="400" y="238" fill="#e6edf3" font-size="15" text-anchor="middle">createDatabase()</text>
+
+  <rect x="320" y="298" width="160" height="75" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="400" y="341" fill="#e6edf3" font-size="15" text-anchor="middle">loadDatabase()</text>
+
+  <!-- ===================== 4. DatabaseController ===================== -->
+  <text x="295" y="468" fill="#e6edf3" font-size="16" font-weight="500">DatabaseController</text>
+  <rect x="295" y="478" width="210" height="235" fill="none" stroke="#f97316" stroke-width="2"/>
+
+  <rect x="320" y="505" width="160" height="75" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="400" y="548" fill="#e6edf3" font-size="15" text-anchor="middle">save()</text>
+
+  <rect x="320" y="610" width="160" height="75" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="400" y="653" fill="#e6edf3" font-size="15" text-anchor="middle">initialize()</text>
+
+  <!-- ===================== 5. CsvFileWriter ===================== -->
+  <text x="555" y="185" fill="#e6edf3" font-size="16" font-weight="500">CsvFileWriter</text>
+  <rect x="555" y="195" width="205" height="125" fill="none" stroke="#0ea5e9" stroke-width="2"/>
+
+  <rect x="578" y="220" width="160" height="75" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="658" y="263" fill="#e6edf3" font-size="15" text-anchor="middle">writeCsvFile()</text>
+
+  <!-- ===================== 6. CsvFileReader ===================== -->
+  <text x="555" y="575" fill="#e6edf3" font-size="16" font-weight="500">CsvFileReader</text>
+  <rect x="555" y="585" width="205" height="125" fill="none" stroke="#a16207" stroke-width="2"/>
+
+  <rect x="578" y="610" width="160" height="75" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="658" y="653" fill="#e6edf3" font-size="15" text-anchor="middle">readCsvFile()</text>
+
+  <!-- ===================== 7. Encryption ===================== -->
+  <text x="800" y="305" fill="#e6edf3" font-size="16" font-weight="500">Encryption</text>
+  <rect x="800" y="315" width="220" height="290" fill="none" stroke="#b45309" stroke-width="2"/>
+
+  <rect x="818" y="345" width="145" height="75" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="890" y="388" fill="#e6edf3" font-size="15" text-anchor="middle">encrypt()</text>
+
+  <rect x="818" y="500" width="145" height="75" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+  <text x="890" y="543" fill="#e6edf3" font-size="15" text-anchor="middle">decrypt()</text>
+
+  <!-- ===================== 8. Decrypted File (.keyholder) ===================== -->
+  <!-- Folded document shape -->
+  <path d="M 1060 285 L 1140 285 L 1170 315 L 1170 415 L 1060 415 Z" fill="#161b22" stroke="#22c55e" stroke-width="2"/>
+  <path d="M 1140 285 L 1140 315 L 1170 315" fill="none" stroke="#22c55e" stroke-width="2"/>
+  <text x="1115" y="342" fill="#e6edf3" font-size="13" text-anchor="middle">decrypted</text>
+  <text x="1115" y="360" fill="#e6edf3" font-size="13" text-anchor="middle">file</text>
+  <text x="1115" y="392" fill="#86efac" font-size="13" font-family="monospace" text-anchor="middle">.keyholder</text>
+
+  <!-- ===================== 9. Encrypted File (keyholder) ===================== -->
+  <!-- Folded document shape -->
+  <path d="M 1060 510 L 1140 510 L 1170 540 L 1170 640 L 1060 640 Z" fill="#161b22" stroke="#ef4444" stroke-width="2"/>
+  <path d="M 1140 510 L 1140 540 L 1170 540" fill="none" stroke="#ef4444" stroke-width="2"/>
+  <text x="1115" y="567" fill="#e6edf3" font-size="13" text-anchor="middle">encrypted</text>
+  <text x="1115" y="585" fill="#e6edf3" font-size="13" text-anchor="middle">file</text>
+  <text x="1115" y="617" fill="#fca5a5" font-size="13" font-family="monospace" text-anchor="middle">keyholder</text>
+
+  <!-- ===================== Connectors & Arrows ===================== -->
+  <!-- App.start() -> GeneratorController (curved to avoid label) -->
+  <path d="M 135 143 C 135 188, 205 180, 205 224" fill="none" stroke="#e6edf3" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- GeneratorController.switchKeyManagerLogin() -> LoginController -->
+  <path d="M 225 342 C 260 342, 255 280, 291 280" fill="none" stroke="#e6edf3" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- LoginController.loadDatabase() -> GeneratorController.switchKeyManager() -> DatabaseController -->
+  <path d="M 320 335 C 272 335, 272 408, 229 408" fill="none" stroke="#e6edf3" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M 135 434 C 135 550, 225 550, 291 550" fill="none" stroke="#e6edf3" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- LoginController.createDatabase() -> CsvFileWriter.writeCsvFile() -->
+  <path d="M 480 232 C 525 232, 535 248, 574 248" fill="none" stroke="#e6edf3" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- DatabaseController.save() -> CsvFileWriter.writeCsvFile() -->
+  <path d="M 480 542 C 540 542, 520 272, 574 272" fill="none" stroke="#e6edf3" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- DatabaseController.initialize() -> CsvFileReader.readCsvFile() -->
+  <path d="M 480 648 L 574 648" fill="none" stroke="#e6edf3" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- CsvFileWriter.writeCsvFile() -> Encryption.encrypt() -->
+  <path d="M 738 258 C 778 258, 770 382, 814 382" fill="none" stroke="#e6edf3" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- CsvFileReader.readCsvFile() -> Encryption.decrypt() -->
+  <path d="M 738 648 C 778 648, 770 538, 814 538" fill="none" stroke="#e6edf3" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- encrypt() self-loop (inside Encryption box) -->
+  <path d="M 963 368 C 1005 368, 1005 398, 967 398" fill="none" stroke="#b0bac6" stroke-width="1.4" marker-end="url(#arrow-muted)"/>
+  <text x="990" y="414" fill="#b0bac6" font-size="12" text-anchor="middle">encrypt</text>
+
+  <!-- decrypt() self-loop (inside Encryption box) -->
+  <path d="M 963 523 C 1005 523, 1005 553, 967 553" fill="none" stroke="#b0bac6" stroke-width="1.4" marker-end="url(#arrow-muted)"/>
+  <text x="990" y="569" fill="#b0bac6" font-size="12" text-anchor="middle">decrypt</text>
+
+  <!-- Decrypted file (.keyholder) -> read -> encrypt() -->
+  <path d="M 1105 285 C 1105 235, 890 235, 890 341" fill="none" stroke="#b0bac6" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+  <text x="998" y="242" fill="#b0bac6" font-size="13" text-anchor="middle">read</text>
+
+  <!-- encrypt() -> write -> Encrypted file (keyholder) -->
+  <path d="M 890 420 C 890 452, 1105 445, 1105 506" fill="none" stroke="#b0bac6" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+  <text x="990" y="442" fill="#b0bac6" font-size="13" text-anchor="middle">write</text>
+
+  <!-- decrypt() -> write -> Decrypted file (.keyholder) -->
+  <path d="M 890 500 C 890 468, 1135 475, 1135 419" fill="none" stroke="#b0bac6" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+  <text x="990" y="485" fill="#b0bac6" font-size="13" text-anchor="middle">write</text>
+
+  <!-- Encrypted file (keyholder) -> read -> decrypt() -->
+  <path d="M 1115 640 C 1115 685, 890 685, 890 579" fill="none" stroke="#b0bac6" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
+  <text x="1002" y="692" fill="#b0bac6" font-size="13" text-anchor="middle">read</text>
+</svg>
