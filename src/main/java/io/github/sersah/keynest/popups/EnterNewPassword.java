@@ -1,66 +1,74 @@
 package io.github.sersah.keynest.popups;
 
-import io.github.sersah.keynest.Encryption;
+import io.github.sersah.keynest.Dialogs;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.net.MalformedURLException;
-
+import java.util.Optional;
 
 
 public class EnterNewPassword
 {
-    public static boolean isPasswordIn = false;
+    public static final int MIN_LENGTH = 8;
 
-    public boolean display()
+    /** Asks for a new master password (typed twice). Empty if the window was closed. */
+    public static Optional<char[]> show()
     {
-        Stage popupwindow=new Stage();
+        Stage popupwindow = Dialogs.createStage("Create Database");
 
-        popupwindow.initModality(Modality.APPLICATION_MODAL);
-        popupwindow.setTitle("Create Database");
-        Image iconpopup = new Image("icon.png");
-        popupwindow.getIcons().add(iconpopup);
-        popupwindow.setResizable(false);
-        Label label = new Label("This password is the only way to access your data.\n It won’t be saved – don’t forget it!");
+        Label label = new Label("This password is the only way to access your data.\nIt won't be saved, don't forget it!");
         label.setTextAlignment(TextAlignment.CENTER);
+
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Master password");
         passwordField.setMaxWidth(250);
 
-        Region region = new Region();
-        Button button = new Button("Confirm Password");
+        PasswordField confirmField = new PasswordField();
+        confirmField.setPromptText("Repeat master password");
+        confirmField.setMaxWidth(250);
+
+        Label error = new Label();
+        error.setStyle("-fx-text-fill: #ff6b6b;");
+
+        char[][] result = new char[1][];
+
+        Button button = new Button("Create database");
+        button.setDefaultButton(true);
         button.setOnAction(e ->
         {
-            if(!passwordField.getText().isBlank())
+            String password = passwordField.getText();
+            if (password.length() < MIN_LENGTH)
             {
-                Encryption.initialKey = passwordField.getText();
-
-                isPasswordIn = true;
+                error.setText("Use at least " + MIN_LENGTH + " characters.");
+            }
+            else if (!password.equals(confirmField.getText()))
+            {
+                error.setText("The passwords don't match.");
+            }
+            else
+            {
+                result[0] = password.toCharArray();
+                passwordField.clear();
+                confirmField.clear();
                 popupwindow.close();
             }
         });
-        button.setDefaultButton(true);
-        popupwindow.setOnShown(e -> button.requestFocus());
 
-        VBox layout= new VBox(7);
-        layout.getChildren().addAll(label, passwordField, region, button);
+        VBox layout = new VBox(7, label, passwordField, confirmField, error, button);
         layout.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(layout, 300, 150);
-        scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
-
+        Scene scene = new Scene(layout, 340, 210);
+        scene.getStylesheets().add(Dialogs.stylesheet());
         popupwindow.setScene(scene);
+        popupwindow.setOnShown(e -> passwordField.requestFocus());
         popupwindow.showAndWait();
 
-        return isPasswordIn;
+        return Optional.ofNullable(result[0]);
     }
 }

@@ -1,56 +1,51 @@
 package io.github.sersah.keynest.popups;
 
+import io.github.sersah.keynest.Dialogs;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.net.MalformedURLException;
 
 
 public class RemoveAccount
 {
-    public static boolean removeRow = false;
-
-    public void display()
+    /** Asks for confirmation. Returns true only if the user clicked "Remove". */
+    public static boolean confirm(String accountName)
     {
-        Stage popupwindow=new Stage();
+        Stage popupwindow = Dialogs.createStage("Remove account");
 
-        popupwindow.initModality(Modality.APPLICATION_MODAL);
-        popupwindow.setTitle("Remove account");
-
-        Label label = new Label("Are you sure you want to remove \nthe selected account?");
+        Label label = new Label("Are you sure you want to remove\n\"" + accountName + "\"?");
         label.setTextAlignment(TextAlignment.CENTER);
 
-        Region region = new Region();
+        boolean[] confirmed = {false};
 
-        Button button = new Button("Remove account");
-
-        button.setOnAction(e ->
+        Button remove = new Button("Remove");
+        remove.setOnAction(e ->
         {
-            removeRow = true;
+            confirmed[0] = true;
             popupwindow.close();
         });
 
-        VBox layout= new VBox(10);
+        Button cancel = new Button("Cancel");
+        cancel.setCancelButton(true);
+        cancel.setDefaultButton(true); // Enter shouldn't delete by accident
+        cancel.setOnAction(e -> popupwindow.close());
 
-        layout.getChildren().addAll(label, region, button);
+        HBox buttons = new HBox(10, cancel, remove);
+        buttons.setAlignment(Pos.CENTER);
 
+        VBox layout = new VBox(12, label, buttons);
         layout.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(layout, 300, 100);
-
-        scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
-
+        Scene scene = new Scene(layout, 300, 120);
+        scene.getStylesheets().add(Dialogs.stylesheet());
         popupwindow.setScene(scene);
-
         popupwindow.showAndWait();
+
+        return confirmed[0];
     }
-
 }
-

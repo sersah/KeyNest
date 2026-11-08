@@ -1,71 +1,51 @@
 package io.github.sersah.keynest.popups;
 
-import io.github.sersah.keynest.Encryption;
+import io.github.sersah.keynest.Dialogs;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.net.MalformedURLException;
-
+import java.util.Optional;
 
 
 public class EnterPassword
 {
-    public static boolean isPasswordIn = false;
-
-    public boolean display()
+    /** Asks for the master password. Empty if the window was closed. */
+    public static Optional<char[]> show()
     {
-        Stage popupwindow=new Stage();
-
-        popupwindow.initModality(Modality.APPLICATION_MODAL);
-        popupwindow.setTitle("Enter password");
-        Image iconpopup = new Image("icon.png");
-        popupwindow.getIcons().add(iconpopup);
+        Stage popupwindow = Dialogs.createStage("Enter password");
 
         Label label = new Label("Enter password to access database:");
-        label.setTextAlignment(TextAlignment.CENTER);
         PasswordField passwordField = new PasswordField();
         passwordField.setMaxWidth(250);
-        Region region = new Region();
 
-        Button button = new Button("Confirm");
+        char[][] result = new char[1][];
 
+        Button button = new Button("Unlock");
+        button.setDefaultButton(true);
         button.setOnAction(e ->
         {
-            if(!passwordField.getText().isBlank())
+            if (!passwordField.getText().isEmpty())
             {
-                Encryption.initialKey = passwordField.getText();
-
-                isPasswordIn = true;
+                result[0] = passwordField.getText().toCharArray();
+                passwordField.clear();
                 popupwindow.close();
             }
         });
 
-        button.setDefaultButton(true);
-
-        VBox layout= new VBox(7);
-
-        layout.getChildren().addAll(label, passwordField, region, button);
-
+        VBox layout = new VBox(7, label, passwordField, new Region(), button);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout, 300, 150);
-
-        scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
-
+        scene.getStylesheets().add(Dialogs.stylesheet());
         popupwindow.setScene(scene);
-        popupwindow.setX(660);
-        popupwindow.setY(225);
         popupwindow.showAndWait();
 
-        return isPasswordIn;
+        return Optional.ofNullable(result[0]);
     }
 }

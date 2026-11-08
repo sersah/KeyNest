@@ -1,9 +1,10 @@
 package io.github.sersah.keynest;
 
+import io.github.sersah.keynest.generator.PasswordGenerator;
+import io.github.sersah.keynest.vault.VaultSession;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,14 +21,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 
 public class GeneratorController {
 
-    private String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private String lowercase = "abcdefghijklmnopqrstuvwxyz";
-    private String numbers = "0123456789";
-    private String specialCharacters = "!@#$%&*()-_=+[]{}|;:,.<>?/";
+    // clipboard is cleared after this time, so the password doesn't stay there forever
+    private static final Duration CLIPBOARD_CLEAR_DELAY = Duration.seconds(30);
+
+    private final PasswordGenerator generator = new PasswordGenerator();
     private String generatedPassword = "";
 
     private Timeline timeline; // animation
@@ -79,114 +79,102 @@ public class GeneratorController {
 
     @FXML
     void buttonCopy(ActionEvent event) {
-        if (!generatedPassword.isEmpty()) {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(generatedPassword);
-            clipboard.setContent(content);
-            showPopup("Password has been copied!", textfield);
-        } else {
+        if (generatedPassword.isEmpty()) {
             labelPassword.setText("Generate a password first!");
+            return;
         }
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(generatedPassword);
+        clipboard.setContent(content);
+        showPopup("Copied! Clipboard is cleared in 30 seconds.", textfield);
+
+        String copied = generatedPassword;
+        PauseTransition clear = new PauseTransition(CLIPBOARD_CLEAR_DELAY);
+        clear.setOnFinished(e -> {
+            // only clear it if the user hasn't copied something else in the meantime
+            if (copied.equals(clipboard.getString())) {
+                clipboard.clear();
+            }
+        });
+        clear.play();
     }
 
     @FXML
     void buttonGenerate(ActionEvent event) {
-        String passwordLength = textfield.getText();
+        int length;
         try {
-            int passwordLengthInt = Integer.parseInt(passwordLength);
-            if (passwordLengthInt < 4) {
-                labelPassword.setText("Password has to be at least 4 characters long!");
-                labelStrength.setText("");
-                return;
-            } else if (passwordLengthInt > 99) {
-                labelPassword.setText("Password can only be 99 characters long!");
-                labelStrength.setText("");
-                return;
-            }
-            String characterSet = generateCharacterSet(
-                    checkboxUppercase.isSelected(),
-                    checkboxLowercase.isSelected(),
-                    checkboxNumbers.isSelected(),
-                    checkboxSpecialCharacters.isSelected()
-            );
-
-            if (characterSet.isEmpty()) {
-                labelPassword.setText("Select at least one option!");
-                labelStrength.setText("");
-                return;
-            }
-
-            generatedPassword = generateRandomPassword(passwordLengthInt, characterSet);
-            updatePasswordStrength(passwordLengthInt);
-        } catch (NumberFormatException e) { // invalid input
-            labelPassword.setText("Please enter a valid number!");
+            length = Integer.parseInt(textfield.getText().strip());
+        } catch (NumberFormatException e) {
+            showError("Please enter a valid number!");
+            return;
         }
+
+        boolean upper = checkboxUppercase.isSelected();
+        boolean lower = checkboxLowercase.isSelected();
+        boolean digits = checkboxNumbers.isSelected();
+        boolean special = checkboxSpecialCharacters.isSelected();
+
+        if (length < PasswordGenerator.MIN_LENGTH) {
+            showError("Password has to be at least " + PasswordGenerator.MIN_LENGTH + " characters long!");
+            return;
+        }
+        if (length > PasswordGenerator.MAX_LENGTH) {
+            showError("Password can only be " + PasswordGenerator.MAX_LENGTH + " characters long!");
+            return;
+        }
+        if (!upper && !lower && !digits && !special) {
+            showError("Select at least one option!");
+            return;
+        }
+
+        generatedPassword = generator.generate(length, upper, lower, digits, special);
+        animatePassword();
+        updatePasswordStrength(PasswordGenerator.entropyBits(length, upper, lower, digits, special));
     }
 
-    private String generateCharacterSet(boolean isUppercase, boolean isLowercase, boolean isNumbers, boolean isSpecialCharacters) {
-        StringBuilder characterSet = new StringBuilder();
-        if (isUppercase) {
-            characterSet.append(uppercase);
-        }
-        
-        if (isLowercase) {
-            characterSet.append(lowercase);
-        }
-        
-        if (isNumbers) {
-            characterSet.append(numbers);
-        }
-        
-        if (isSpecialCharacters) {
-            characterSet.append(specialCharacters);
-        }
-        
-        return characterSet.toString();
+    private void showError(String message) {
+        labelPassword.setText(message);
+        labelStrength.setText("");
     }
 
-    private String generateRandomPassword(int passwordLength, String characterSet) {
-        SecureRandom random = new SecureRandom();
-        StringBuilder password = new StringBuilder();
-        labelPassword.setText("");
-
+    // types the password character by character
+    private void animatePassword() {
         if (timeline != null) {
             timeline.stop();
         }
-        //animation
+        labelPassword.setText("");
         timeline = new Timeline();
-        for (int i = 0; i < passwordLength; i++) {
-            password.append(characterSet.charAt(random.nextInt(characterSet.length())));
-
+        for (int i = 0; i < generatedPassword.length(); i++) {
             int index = i;
-            KeyFrame keyFrame = new KeyFrame(Duration.millis(20 * i), event -> {
-                labelPassword.setText(labelPassword.getText() + generatedPassword.charAt(index));
-            });
-
-            timeline.getKeyFrames().add(keyFrame);
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(20 * i),
+                    event -> labelPassword.setText(generatedPassword.substring(0, index + 1))));
         }
         timeline.play();
-        
-        return password.toString();
     }
 
-    private void updatePasswordStrength(int passwordLength) {
+    private void updatePasswordStrength(double entropyBits) {
         String strength;
-        if (passwordLength >= 12) {
-            strength = "Strong";
-            barstrength.setProgress(1.0);
-            barstrength.setStyle("-fx-accent: #1dc412;");
-        } else if (passwordLength >= 8) {
-            strength = "Medium";
-            barstrength.setProgress(0.5);
-            barstrength.setStyle("-fx-accent: #ffae10;");
-        } else {
-            strength = "Weak";
-            barstrength.setProgress(0.25);
-            barstrength.setStyle("-fx-accent: red;");
+        switch (PasswordGenerator.rate(entropyBits)) {
+            case STRONG -> {
+                strength = "Strong";
+                barstrength.setProgress(1.0);
+                barstrength.setStyle("-fx-accent: #1dc412;");
+            }
+            case MEDIUM -> {
+                strength = "Medium";
+                barstrength.setProgress(0.5);
+                barstrength.setStyle("-fx-accent: #ffae10;");
+            }
+            default -> {
+                strength = "Weak";
+                barstrength.setProgress(0.25);
+                barstrength.setStyle("-fx-accent: red;");
+            }
         }
-        labelStrength.setText(strength + " Password");
+        labelStrength.setText(strength + " Password (~" + Math.round(entropyBits) + " bits)");
     }
+
     // scene changes:
     public void switchKeyGenerator(ActionEvent event) throws IOException {
         AnchorPane view = FXMLLoader.load(getClass().getResource("KeyGenerator.fxml"));
@@ -198,11 +186,11 @@ public class GeneratorController {
         borderpane.setCenter(view);
     }
     
-    public void switchKeyManager(ObservableList<Account> accounts) throws IOException {
+    public void switchKeyManager(VaultSession session) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("KeyManager.fxml"));
         AnchorPane view = loader.load();
         DatabaseController databaseController = loader.getController();
-        databaseController.setAccounts(accounts);
+        databaseController.setSession(session);
         borderpane.setCenter(view);
         toggleKM.setSelected(true); // needed as without it, every button becomes the Generator-Button
     }

@@ -30,15 +30,7 @@ public final class Dialogs
     /** Shows a modal dialog with custom content and a "Close" button. */
     public static void show(String title, Node content, double width, double height)
     {
-        Stage popup = new Stage();
-        popup.initModality(Modality.APPLICATION_MODAL);
-        if (App.stage != null)
-        {
-            popup.initOwner(App.stage); // centers the dialog on the main window
-        }
-        popup.setTitle(title);
-        popup.getIcons().add(new Image("icon.png"));
-        popup.setResizable(false);
+        Stage popup = createStage(title);
 
         Button close = new Button("Close");
         close.setOnAction(e -> popup.close());
@@ -51,6 +43,21 @@ public final class Dialogs
         scene.getStylesheets().add(stylesheet());
         popup.setScene(scene);
         popup.showAndWait();
+    }
+
+    /** An empty modal window with the app icon, centered on the main window. */
+    public static Stage createStage(String title)
+    {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        if (App.stage != null)
+        {
+            stage.initOwner(App.stage);
+        }
+        stage.setTitle(title);
+        stage.getIcons().add(new Image("icon.png"));
+        stage.setResizable(false);
+        return stage;
     }
 
     /** URL of the popup stylesheet, for popups that build their own scene. */

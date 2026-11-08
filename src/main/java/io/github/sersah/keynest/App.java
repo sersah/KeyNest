@@ -1,6 +1,7 @@
 package io.github.sersah.keynest;
 
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ public class App extends Application
 {
     public static Scene scene;
     public static Stage stage;
+    private static HostServices hostServices;
 
     @Override
     public void start(Stage stage) throws IOException
@@ -21,6 +23,7 @@ public class App extends Application
         Image icon = new Image("icon.png");
         stage.getIcons().add(icon);
         App.stage = stage;
+        App.hostServices = getHostServices();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("GUImain.fxml"));
         Parent root = loader.load();
         scene = new Scene(root);
@@ -35,6 +38,11 @@ public class App extends Application
     {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
+    }
+
+    public static void openInBrowser(String url)
+    {
+        hostServices.showDocument(url);
     }
 
     public static void main(String[] args)

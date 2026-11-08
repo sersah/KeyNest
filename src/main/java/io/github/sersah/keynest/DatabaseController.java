@@ -1,8 +1,11 @@
 package io.github.sersah.keynest;
 
-import io.github.sersah.keynest.popups.AddAccount;
-import io.github.sersah.keynest.popups.EditAccount;
+import io.github.sersah.keynest.popups.AccountDialog;
 import io.github.sersah.keynest.popups.RemoveAccount;
+import io.github.sersah.keynest.vault.Account;
+import io.github.sersah.keynest.vault.VaultSession;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -11,7 +14,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -20,12 +22,17 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
-import java.awt.Desktop;
-import java.net.URI;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseController
 {
+    private static final Logger LOG = Logger.getLogger(DatabaseController.class.getName());
     private static final String GITHUB_URL = "https://github.com/sersah";
+    private static final Comparator<Account> BY_NAME = Comparator.comparing(Account::name, String.CASE_INSENSITIVE_ORDER);
 
     private boolean showPw = false;
 
@@ -47,15 +54,14 @@ public class DatabaseController
     @FXML
     private CheckBox showPasswordCheckbox;
 
-    private String encryptedDB = System.getProperty("user.home") + System.getProperty("file.separator") + "keyholder";
-    private String decryptedDB = System.getProperty("user.home") + System.getProperty("file.separator") + ".keyholder";
+    private VaultSession session;
 
     @FXML
     private void initialize()
     {
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        passwordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
+        nameColumn.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().name()));
+        emailColumn.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().email()));
+        passwordColumn.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().password()));
 
         nameColumn.setReorderable(false);
         emailColumn.setReorderable(false);
@@ -68,110 +74,84 @@ public class DatabaseController
         nameColumn.setSortable(false);
     }
 
-    /**
-     * Shows the accounts of an already unlocked vault. The caller decrypts the vault
-     * first, so this view is never opened with a wrong master password.
-     */
-    public void setAccounts(ObservableList<Account> accounts)
+    /** Called by the LoginController after the vault was unlocked. */
+    public void setSession(VaultSession session)
     {
+        this.session = session;
+        ObservableList<Account> accounts = FXCollections.observableArrayList(session.getAccounts());
+        accounts.sort(BY_NAME);
         table.setItems(accounts);
-        accountCounter.setText("Accounts saved: " + accounts.size());
+        updateCounter();
     }
 
     @FXML
     private void showPasswords()
     {
-        if(showPw)
-        {
-            passwordColumn.setVisible(false);
-            showPasswordCheckbox.setSelected(false);
-            showPw = false;
-        }
-        else
-        {
-            passwordColumn.setVisible(true);
-            showPasswordCheckbox.setSelected(true);
-            showPw = true;
-        }
+        showPw = !showPw;
+        passwordColumn.setVisible(showPw);
+        showPasswordCheckbox.setSelected(showPw);
     }
 
     private void save()
     {
-        nameColumn.setSortable(true);
-        nameColumn.setSortType(TableColumn.SortType.ASCENDING);
-        table.getSortOrder().add(nameColumn);
-        table.sort();
-        nameColumn.setSortable(false);
         ObservableList<Account> accounts = table.getItems();
-        CsvFileWriter.writeCsvFile(decryptedDB, accounts);
+        accounts.sort(BY_NAME);
+        try
+        {
+            session.save(List.copyOf(accounts));
+        }
+        catch (IOException e)
+        {
+            LOG.log(Level.SEVERE, "Could not save vault", e);
+            Dialogs.info("Saving failed", "Your changes could not be saved:\n" + e.getMessage());
+        }
+        updateCounter();
+    }
 
-
-        accountCounter.setText("Accounts saved: " + accounts.size());
+    private void updateCounter()
+    {
+        accountCounter.setText("Accounts saved: " + table.getItems().size());
     }
 
     @FXML
     private void addAccount()
     {
-        AddAccount popup = new AddAccount();
-        popup.display();
-
-        if (AddAccount.account != null)
+        AccountDialog.add().ifPresent(account ->
         {
-            ObservableList<Account> accounts = table.getItems();
-            accounts.add(AddAccount.account);
-
-            AddAccount.account = null;
-
+            table.getItems().add(account);
             save();
-        }
+        });
     }
 
     @FXML
     private void editAccount()
     {
         int row = table.getSelectionModel().getSelectedIndex();
-
-        if(row != -1)
+        if (row == -1)
         {
-            Account account = table.getSelectionModel().getSelectedItem();
-
-            EditAccount popup = new EditAccount(account);
-            popup.display();
-
-            if(EditAccount.editRow)
-            {
-                table.getItems().remove(row);
-
-                ObservableList<Account> accounts = table.getItems();
-                accounts.add(EditAccount.account);
-
-                EditAccount.editRow = false;
-
-
-                save();
-            }
+            return;
         }
+
+        AccountDialog.edit(table.getItems().get(row)).ifPresent(edited ->
+        {
+            table.getItems().set(row, edited);
+            save();
+        });
     }
 
     @FXML
     private void removeAccount()
     {
         int row = table.getSelectionModel().getSelectedIndex();
-
-        if(row != -1)
+        if (row == -1)
         {
-            RemoveAccount popup = new RemoveAccount();
-            popup.display();
+            return;
+        }
 
-            if(RemoveAccount.removeRow)
-            {
-                table.getItems().remove(row);
-
-                RemoveAccount.removeRow = false;
-
-
-                save();
-            }
+        if (RemoveAccount.confirm(table.getItems().get(row).name()))
+        {
+            table.getItems().remove(row);
+            save();
         }
     }
 
@@ -179,16 +159,7 @@ public class DatabaseController
     private void about()
     {
         Hyperlink link = new Hyperlink(GITHUB_URL);
-        link.setOnAction(e -> {
-            try
-            {
-                Desktop.getDesktop().browse(new URI(GITHUB_URL));
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        });
+        link.setOnAction(e -> App.openInBrowser(GITHUB_URL));
 
         VBox content = new VBox(new Label("Find more of my projects here:"), link);
         content.setAlignment(Pos.CENTER);
@@ -200,7 +171,7 @@ public class DatabaseController
     {
         Text text1 = new Text("The location of the database is:\n");
         text1.setFill(Color.WHITE);
-        Text text2 = new Text(encryptedDB);
+        Text text2 = new Text(session.getRepository().getFile().toString());
         text2.setFont(Font.font("System", FontWeight.BOLD, 12));
         text2.setFill(Color.WHITE);
         TextFlow textFlow = new TextFlow(text1, text2);
@@ -209,4 +180,3 @@ public class DatabaseController
         Dialogs.show("Database Location", textFlow, 265, 115);
     }
 }
-
