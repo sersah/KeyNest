@@ -7,74 +7,68 @@ import org.apache.commons.csv.CSVFormat.Builder;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import javax.crypto.AEADBadTagException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 
 public class CsvFileReader
-{   
+{
     //CSV file header
-    private static final String [] FILE_HEADER_MAPPING = {"name", "email", "password"};
-     
+    private static final String[] FILE_HEADER_MAPPING = {"name", "email", "password"};
+
     //Account attributes
     private static final String NAME = "name";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
 
-    private static String decryptedDB =System.getProperty("user.home") + System.getProperty("file.separator") + ".keyholder";
+    private static String decryptedDB = System.getProperty("user.home") + System.getProperty("file.separator") + ".keyholder";
     public static File decryptedFile = new File(decryptedDB);
 
-    public static ObservableList<Account> readCsvFile(String encryptedDB)
+    /**
+     * Decrypts the vault and parses its accounts.
+     *
+     * @throws WrongPasswordException if the master password is wrong (or the file was tampered with)
+     * @throws IOException            if the vault file cannot be read or is not a valid vault
+     */
+    public static ObservableList<Account> readCsvFile() throws WrongPasswordException, IOException
     {
-        FileReader fileReader = null;
-         
-        CSVParser csvFileParser = null;
-        
-        //Create the CSVFormat object with the header mapping and set the header
-        Builder builder = Builder.create().setHeader(FILE_HEADER_MAPPING);
-        CSVFormat csvFileFormat = builder.build();
-                
-        //Create a new list of account to be filled by CSV file data 
+        CSVFormat csvFileFormat = Builder.create().setHeader(FILE_HEADER_MAPPING).build();
         ObservableList<Account> accounts = FXCollections.observableArrayList();
-        
+
         try
         {
-            //decrypt database
-            String decryptedDB = Encryption.decrypt();
+            String decryptedPath = Encryption.decrypt();
 
-            //initialize FileReader object
-            fileReader = new FileReader(decryptedDB);
-             
-            //initialize CSVParser object
-            csvFileParser = new CSVParser(fileReader, csvFileFormat);
-             
-            //Get a list of CSV file records
-            List<CSVRecord> csvRecords = csvFileParser.getRecords(); 
-             
-            //Read the CSV file records starting from the second record to skip the header
-            for (int i = 1; i < csvRecords.size(); i++) {
-                CSVRecord record = csvRecords.get(i);
-                //Create a new account object and fill his data
-                Account account = new Account(record.get(NAME), record.get(EMAIL), record.get(PASSWORD));
-                accounts.add(account);
+            try (FileReader fileReader = new FileReader(decryptedPath);
+                 CSVParser csvFileParser = new CSVParser(fileReader, csvFileFormat))
+            {
+                List<CSVRecord> csvRecords = csvFileParser.getRecords();
+
+                //start from the second record to skip the header
+                for (int i = 1; i < csvRecords.size(); i++)
+                {
+                    CSVRecord record = csvRecords.get(i);
+                    accounts.add(new Account(record.get(NAME), record.get(EMAIL), record.get(PASSWORD)));
+                }
             }
-
-            // delete decryptedDB
-            decryptedFile.delete();
-        } 
-        catch(Exception e)
-        {
-            System.err.println("Error in CsvFileReader!");
         }
-        finally {
-            try {
-                fileReader.close();
-                csvFileParser.close();
-            } catch (IOException e) {
-                System.err.println("Error while closing fileReader/csvFileParser!");
-            }
+        catch (AEADBadTagException e)
+        {
+            throw new WrongPasswordException(e);
+        }
+        catch (GeneralSecurityException | IllegalArgumentException e)
+        {
+            // IllegalArgumentException: file is not valid Base64, so it's not a KeyNest vault
+            throw new IOException("Vault file is corrupted or in an unsupported format", e);
+        }
+        finally
+        {
+            //never leave the decrypted vault lying around, even if parsing failed
+            decryptedFile.delete();
         }
         return accounts;
     }

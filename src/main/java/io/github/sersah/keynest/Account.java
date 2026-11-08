@@ -18,7 +18,7 @@ public class Account
     @Override
     public String toString()
     {
-        return "Account [name=" + name + ", email=" + email + ", password=" + password + "]\n";
+        return "Account [name=" + name + ", email=" + email + "]\n";
     }
 
     public String getName()

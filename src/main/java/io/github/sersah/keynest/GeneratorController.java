@@ -3,6 +3,7 @@ package io.github.sersah.keynest;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -197,8 +198,11 @@ public class GeneratorController {
         borderpane.setCenter(view);
     }
     
-    public void switchKeyManager(ActionEvent event) throws IOException {
-        AnchorPane view = FXMLLoader.load(getClass().getResource("KeyManager.fxml"));
+    public void switchKeyManager(ObservableList<Account> accounts) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("KeyManager.fxml"));
+        AnchorPane view = loader.load();
+        DatabaseController databaseController = loader.getController();
+        databaseController.setAccounts(accounts);
         borderpane.setCenter(view);
         toggleKM.setSelected(true); // needed as without it, every button becomes the Generator-Button
     }

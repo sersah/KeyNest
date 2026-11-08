@@ -43,7 +43,6 @@ public class EnterNewPassword
             if(!passwordField.getText().isBlank())
             {
                 Encryption.initialKey = passwordField.getText();
-                System.out.println("Master password: " + passwordField.getText());
 
                 isPasswordIn = true;
                 popupwindow.close();

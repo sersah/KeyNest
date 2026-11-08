@@ -53,9 +53,6 @@ public class DatabaseController
     @FXML
     private void initialize()
     {
-        //load database
-        ObservableList<Account> accounts = CsvFileReader.readCsvFile(encryptedDB);
-
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         passwordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
@@ -68,13 +65,17 @@ public class DatabaseController
 
 
         table.setPlaceholder(new Label("No accounts here!"));
-        table.setItems(accounts);
         nameColumn.setSortable(false);
+    }
 
+    /**
+     * Shows the accounts of an already unlocked vault. The caller decrypts the vault
+     * first, so this view is never opened with a wrong master password.
+     */
+    public void setAccounts(ObservableList<Account> accounts)
+    {
+        table.setItems(accounts);
         accountCounter.setText("Accounts saved: " + accounts.size());
-
-        System.out.println("Database loaded");
-
     }
 
     @FXML
@@ -85,14 +86,12 @@ public class DatabaseController
             passwordColumn.setVisible(false);
             showPasswordCheckbox.setSelected(false);
             showPw = false;
-            System.out.println("Passwords status set to hidden");
         }
         else
         {
             passwordColumn.setVisible(true);
             showPasswordCheckbox.setSelected(true);
             showPw = true;
-            System.out.println("Passwords status set to visible");
         }
     }
 
@@ -121,8 +120,6 @@ public class DatabaseController
             ObservableList<Account> accounts = table.getItems();
             accounts.add(AddAccount.account);
 
-            System.out.println("Added account:\n" + AddAccount.account);
-
             AddAccount.account = null;
 
             save();
@@ -150,7 +147,6 @@ public class DatabaseController
 
                 EditAccount.editRow = false;
 
-                System.out.println("Edit account in row " + (row+1));
 
                 save();
             }
@@ -173,7 +169,6 @@ public class DatabaseController
 
                 RemoveAccount.removeRow = false;
 
-                System.out.println("Removed account in row " + (row+1));
 
                 save();
             }
