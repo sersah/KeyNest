@@ -17,7 +17,7 @@ public class RemoveAccount
 {
     public static boolean removeRow = false;
 
-    public void display() throws MalformedURLException
+    public void display()
     {
         Stage popupwindow=new Stage();
 

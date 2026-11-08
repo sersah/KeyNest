@@ -20,7 +20,7 @@ public class AddAccount
 {
     public static Account account = null;
 
-    public void display() throws MalformedURLException
+    public void display()
     {
         Stage popupwindow=new Stage();
         popupwindow.initModality(Modality.APPLICATION_MODAL);

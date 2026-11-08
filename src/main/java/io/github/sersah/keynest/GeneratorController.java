@@ -6,7 +6,12 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.AnchorPane;
@@ -98,12 +103,12 @@ public class GeneratorController {
                 labelStrength.setText("");
                 return;
             }
-                    String characterSet = generateCharacterSet(
-                        checkboxUppercase.isSelected(),
-                        checkboxLowercase.isSelected(),
-                        checkboxNumbers.isSelected(),
-                        checkboxSpecialCharacters.isSelected()
-                    );
+            String characterSet = generateCharacterSet(
+                    checkboxUppercase.isSelected(),
+                    checkboxLowercase.isSelected(),
+                    checkboxNumbers.isSelected(),
+                    checkboxSpecialCharacters.isSelected()
+            );
 
             if (characterSet.isEmpty()) {
                 labelPassword.setText("Select at least one option!");
@@ -137,10 +142,6 @@ public class GeneratorController {
         }
         
         return characterSet.toString();
-    }
-
-    private void generatePassword(int passwordLength, String characterSet) {
-        generatedPassword = generateRandomPassword(passwordLength, characterSet);
     }
 
     private String generateRandomPassword(int passwordLength, String characterSet) {

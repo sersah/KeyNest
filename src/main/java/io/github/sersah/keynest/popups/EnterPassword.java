@@ -21,7 +21,7 @@ public class EnterPassword
 {
     public static boolean isPasswordIn = false;
 
-    public boolean display() throws MalformedURLException
+    public boolean display()
     {
         Stage popupwindow=new Stage();
 

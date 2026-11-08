@@ -6,28 +6,28 @@ import io.github.sersah.keynest.popups.RemoveAccount;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.*;
 import javafx.scene.text.Font;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 
-import java.awt.*;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.awt.Desktop;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 public class DatabaseController
 {
-    private Boolean showPw = false;
+    private static final String GITHUB_URL = "https://github.com/sersah";
+
+    private boolean showPw = false;
 
     @FXML
     private TableView<Account> table;
@@ -78,7 +78,7 @@ public class DatabaseController
     }
 
     @FXML
-    private void showPasswords() throws IOException
+    private void showPasswords()
     {
         if(showPw)
         {
@@ -111,7 +111,7 @@ public class DatabaseController
     }
 
     @FXML
-    private void addAccount() throws MalformedURLException, URISyntaxException
+    private void addAccount()
     {
         AddAccount popup = new AddAccount();
         popup.display();
@@ -130,7 +130,7 @@ public class DatabaseController
     }
 
     @FXML
-    private void editAccount() throws MalformedURLException
+    private void editAccount()
     {
         int row = table.getSelectionModel().getSelectedIndex();
 
@@ -158,7 +158,7 @@ public class DatabaseController
     }
 
     @FXML
-    private void removeAccount() throws MalformedURLException
+    private void removeAccount()
     {
         int row = table.getSelectionModel().getSelectedIndex();
 
@@ -181,57 +181,28 @@ public class DatabaseController
     }
 
     @FXML
-    private void about() throws MalformedURLException
+    private void about()
     {
+        Hyperlink link = new Hyperlink(GITHUB_URL);
+        link.setOnAction(e -> {
+            try
+            {
+                Desktop.getDesktop().browse(new URI(GITHUB_URL));
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        });
 
-        Stage popup = new Stage ();
-        popup.initModality(Modality.APPLICATION_MODAL);
-        popup.setTitle("About");
-        Image iconpopup = new Image("icon.png");
-        popup.getIcons().add(iconpopup);
-
-        Hyperlink link = new Hyperlink("https://github.com/serhat27s");
-            link.setOnAction(e -> {
-                try {
-                    Desktop.getDesktop().browse(new URI(link.getText()));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-        Label label = new Label("Find more of my projects here:" );
-
-        VBox vb = new VBox(label, link);
-        VBox layout= new VBox(7);
-
-        Button button = new Button("Close");
-        button.setOnAction(e -> popup.close());
-
-        layout.getChildren().addAll(vb, button);
-        vb.setAlignment(Pos.CENTER);
-        layout.setAlignment(Pos.CENTER);
-
-        Scene scene = new Scene(layout, 265, 115);
-        scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
-
-        popup.setX(660);
-        popup.setY(225);
-        popup.setScene(scene);
-        popup.showAndWait();
+        VBox content = new VBox(new Label("Find more of my projects here:"), link);
+        content.setAlignment(Pos.CENTER);
+        Dialogs.show("About", content, 265, 115);
     }
 
     @FXML
-    private void locateDatabase() throws MalformedURLException
+    private void locateDatabase()
     {
-        Stage popup = new Stage ();
-        popup.initModality(Modality.APPLICATION_MODAL);
-        popup.setTitle("Database Location");
-        Image iconpopup = new Image("icon.png");
-        popup.getIcons().add(iconpopup);
-
-
-
-        VBox layout= new VBox(7);
-
         Text text1 = new Text("The location of the database is:\n");
         text1.setFill(Color.WHITE);
         Text text2 = new Text(encryptedDB);
@@ -240,20 +211,7 @@ public class DatabaseController
         TextFlow textFlow = new TextFlow(text1, text2);
         textFlow.setTextAlignment(TextAlignment.CENTER);
 
-        Button button = new Button("Close");
-        button.setOnAction(e -> popup.close());
-
-        layout.getChildren().addAll(textFlow, button);
-        layout.setAlignment(Pos.CENTER);
-
-        Scene scene = new Scene(layout, 265, 115);
-        scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
-
-        popup.setX(660);
-        popup.setY(225);
-        popup.setScene(scene);
-        popup.showAndWait();
+        Dialogs.show("Database Location", textFlow, 265, 115);
     }
-
 }
 

@@ -27,7 +27,7 @@ public class EditAccount
         EditAccount.account = account;
     }
 
-    public void display() throws MalformedURLException
+    public void display()
     {
         Stage popupwindow=new Stage();
         popupwindow.setTitle("Edit account");
