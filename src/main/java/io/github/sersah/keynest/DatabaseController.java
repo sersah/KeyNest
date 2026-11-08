@@ -1,8 +1,8 @@
-package com.example.KeyNest;
+package io.github.sersah.keynest;
 
-import com.example.KeyNest.popups.AddAccount;
-import com.example.KeyNest.popups.EditAccount;
-import com.example.KeyNest.popups.RemoveAccount;
+import io.github.sersah.keynest.popups.AddAccount;
+import io.github.sersah.keynest.popups.EditAccount;
+import io.github.sersah.keynest.popups.RemoveAccount;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -211,7 +211,7 @@ public class DatabaseController
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout, 265, 115);
-        scene.getStylesheets().add(getClass().getResource("/com/example/KeyNest/popups.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
 
         popup.setX(660);
         popup.setY(225);
@@ -247,7 +247,7 @@ public class DatabaseController
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout, 265, 115);
-        scene.getStylesheets().add(getClass().getResource("/com/example/KeyNest/popups.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
 
         popup.setX(660);
         popup.setY(225);

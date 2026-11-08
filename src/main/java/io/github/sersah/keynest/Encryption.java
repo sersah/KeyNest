@@ -1,4 +1,4 @@
-package com.example.KeyNest;
+package io.github.sersah.keynest;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;

@@ -1,4 +1,4 @@
-package com.example.KeyNest;
+package io.github.sersah.keynest;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVFormat.Builder;

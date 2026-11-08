@@ -1,19 +1,10 @@
-module com.example.KeyNest {
+module io.github.sersah.keynest {
     requires javafx.controls;
     requires javafx.fxml;
-    requires javafx.web;
-
-    requires org.controlsfx.controls;
-    requires com.dlsc.formsfx;
-    requires net.synedra.validatorfx;
-    requires org.kordamp.ikonli.javafx;
-    requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
     requires org.apache.commons.csv;
-    requires java.desktop;
+    requires java.desktop; // java.awt.Desktop for opening links in the browser
 
-    opens com.example.KeyNest to javafx.fxml;
-    exports com.example.KeyNest;
-    exports com.example.KeyNest.popups;
-    opens com.example.KeyNest.popups to javafx.fxml;
+    opens io.github.sersah.keynest to javafx.fxml;
+    exports io.github.sersah.keynest;
+    exports io.github.sersah.keynest.popups;
 }

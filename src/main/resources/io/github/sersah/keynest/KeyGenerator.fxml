@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="507.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.KeyNest.GeneratorController">
+<AnchorPane prefHeight="507.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.sersah.keynest.GeneratorController">
    <children>
       <StackPane fx:id="contentPane" prefHeight="507.0" prefWidth="761.0" style="-fx-background-color: #2F2B43;">
          <children>

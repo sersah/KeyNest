@@ -1,4 +1,4 @@
-package com.example.KeyNest.popups;
+package io.github.sersah.keynest.popups;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -45,7 +45,7 @@ public class RemoveAccount
 
         Scene scene = new Scene(layout, 300, 100);
 
-        scene.getStylesheets().add(getClass().getResource("/com/example/KeyNest/popups.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
 
         popupwindow.setScene(scene);
 

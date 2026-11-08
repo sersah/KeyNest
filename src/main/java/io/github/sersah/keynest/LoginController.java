@@ -1,7 +1,7 @@
-package com.example.KeyNest;
+package io.github.sersah.keynest;
 
-import com.example.KeyNest.popups.EnterNewPassword;
-import com.example.KeyNest.popups.EnterPassword;
+import io.github.sersah.keynest.popups.EnterNewPassword;
+import io.github.sersah.keynest.popups.EnterPassword;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -63,7 +63,7 @@ public class LoginController
             layout.setAlignment(Pos.CENTER);
 
             Scene scene = new Scene(layout, 265, 115);
-            scene.getStylesheets().add(getClass().getResource("/com/example/KeyNest/popups.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
 
             popup.setX(660);
             popup.setY(225);
@@ -126,7 +126,7 @@ public class LoginController
                 layout.setAlignment(Pos.CENTER);
 
                 Scene scene = new Scene(layout, 275, 115);
-                scene.getStylesheets().add(getClass().getResource("/com/example/KeyNest/popups.css").toExternalForm());
+                scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
 
                 popup.setX(660);
                 popup.setY(225);

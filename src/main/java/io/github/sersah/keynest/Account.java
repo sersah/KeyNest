@@ -1,4 +1,4 @@
-package com.example.KeyNest;
+package io.github.sersah.keynest;
 
 
 public class Account

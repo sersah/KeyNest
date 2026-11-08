@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="749.0" style="-fx-background-color: #2F2B43;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.KeyNest.DatabaseController">
+<AnchorPane prefHeight="500.0" prefWidth="749.0" style="-fx-background-color: #2F2B43;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.sersah.keynest.DatabaseController">
    <children>
       <BorderPane layoutX="1.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="749.0" style="-fx-background-color: #2F2B43;" stylesheets="@style.css">
          <bottom>

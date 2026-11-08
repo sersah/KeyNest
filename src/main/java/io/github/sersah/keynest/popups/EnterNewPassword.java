@@ -1,6 +1,6 @@
-package com.example.KeyNest.popups;
+package io.github.sersah.keynest.popups;
 
-import com.example.KeyNest.Encryption;
+import io.github.sersah.keynest.Encryption;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -57,7 +57,7 @@ public class EnterNewPassword
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout, 300, 150);
-        scene.getStylesheets().add(getClass().getResource("/com/example/KeyNest/popups.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/io/github/sersah/keynest/popups.css").toExternalForm());
 
         popupwindow.setScene(scene);
         popupwindow.showAndWait();
