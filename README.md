@@ -1,48 +1,81 @@
-# KeyNest 🔑 & 🔒
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white) ![JavaFX](https://img.shields.io/badge/javafx-%23FF0000.svg?style=for-the-badge&logo=javafx&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)  
-KeyGenerator and KeyManager combined!  
-Generate secure passwords and store them in an offline encrypted file! 
+# KeyNest 🔑
 
+[![CI](https://github.com/sersah/KeyNest/actions/workflows/ci.yml/badge.svg)](https://github.com/sersah/KeyNest/actions/workflows/ci.yml)
+![Java 21](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
+![JavaFX](https://img.shields.io/badge/JavaFX-21-1f6feb)
 
-**Features  ✨**
----------
-- Customizable Password Length
-- **Configurable Character Types**:  
-  - Special characters (e.g., `@`, `#`, `!`)  
-  - Uppercase letters (e.g., `A`, `B`, `C`)  
-  - Lowercase letters (e.g., `a`, `b`, `c`)  
-  - Digits (e.g., `0-9`)
+A desktop app that **generates strong passwords** and **stores them in an offline, encrypted vault** protected by a single master password. Built with Java 21 and JavaFX.
 
-- **Offline Encrypted Vault**: Stores credentials locally in an AES-encrypted database file (`~/keyholder`).
-- **Master Password Protection**: Derives a 128-bit AES key from the user's master password via `SHA-256`.
-- **Full CRUD Management**: Add, edit, sort, and remove saved accounts with toggleable password visibility.
-
-
-**Specification ⚙️**
---------
-- Cryptographically strong password generation using `SecureRandom`
-- SHA-256 message digest for master key derivation `SecretKeySpec`
-- GUI developed with JavaFX SceneBuilder
-- AES for vault encryption
-- CSV database format
-- Maven support for dependencies and automation
-
-**Screenshots 🖼️**
----------
-
-Generator/Main view | KeyManager login view
+Generator | Vault login
 :-------------------------:|:-------------------------:
-![Preview](screenshots/GUImain.PNG)  |  ![Preview](screenshots/KeyManagerLogin.PNG)
+![Password generator](screenshots/GUImain.PNG) | ![Vault login](screenshots/KeyManagerLogin.PNG)
 
-
-KeyManager view (passwords hidden) | KeyManager view (passwords shown)
+Vault (passwords hidden) | Vault (passwords shown)
 :-------------------------:|:-------------------------:
-![Preview](screenshots/KeyManagerNOPW.PNG)  |  ![Preview](screenshots/KeyManagerPW.PNG)
+![Vault, passwords hidden](screenshots/KeyManagerNOPW.PNG) | ![Vault, passwords shown](screenshots/KeyManagerPW.PNG)
 
----
+## Features
 
-## 🔄 Flow Diagram
+**Password generator**
+- Length from 4 to 99 characters
+- Choose any mix of uppercase, lowercase, digits and special characters
+- Uses `java.security.SecureRandom`
+- Strength indicator and one-click copy to clipboard
 
-![Flow Diagram](screenshots/flow_diagram.svg)
+**Encrypted vault**
+- Stored locally in a single encrypted file (`~/keyholder`), no network access
+- Protected by a master password that is never stored
+- Add, edit and remove accounts; passwords are hidden until you toggle them visible
 
----
+## Getting started
+
+**Requirements:** JDK 21 or newer. Maven is not needed; the Maven Wrapper downloads it.
+
+```bash
+git clone https://github.com/sersah/KeyNest.git
+cd KeyNest
+./mvnw javafx:run        # Windows: mvnw.cmd javafx:run
+```
+
+## Security design
+
+<!-- TODO(Serhat): write this section in your own words. Cover:
+     - how the key is derived from the master password (algorithm, iterations, salt)
+     - which cipher/mode is used and why (and why ECB was replaced)
+     - what the encrypted file contains (salt | iv | ciphertext)
+     - how a wrong master password is detected
+     - where decrypted data lives while the app is open -->
+
+## Architecture
+
+```
+io.github.sersah.keynest
+├── App                    JavaFX entry point, loads GUImain.fxml
+├── GeneratorController    password generator view + navigation
+├── LoginController        create / unlock the vault
+├── DatabaseController     vault table: add, edit, remove, show passwords
+├── Encryption             key derivation + AES-GCM encrypt/decrypt
+├── CsvFileReader/Writer   (de)serialise accounts as CSV
+├── Account                one vault entry (name, email, password)
+├── Dialogs                shared modal dialogs
+└── popups/                input dialogs (add/edit/remove account, master password)
+```
+
+![Flow diagram](screenshots/flow_diagram.svg)
+
+## Running the tests
+
+```bash
+./mvnw test
+```
+
+## Limitations and future work
+
+<!-- TODO(Serhat): be honest about what this does NOT protect against, e.g.
+     clipboard is not cleared automatically, Java Strings can't be wiped from memory,
+     no protection against malware on the same machine, possible next steps
+     (Argon2, auto-lock after inactivity, clipboard timeout, ...). -->
+
+## Tech stack
+
+Java 21 · JavaFX 21 (FXML, Scene Builder, CSS) · Apache Commons CSV · JUnit 5 · Maven · GitHub Actions
