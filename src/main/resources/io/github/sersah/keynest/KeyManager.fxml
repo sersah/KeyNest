@@ -30,7 +30,7 @@
                      <graphic>
                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" translateX="-5.0">
                            <image>
-                              <Image url="@../../../icon_lock.png" />
+                              <Image url="@/icon_lock.png" />
                            </image>
                         </ImageView>
                      </graphic>
