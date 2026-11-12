@@ -56,13 +56,16 @@ Run the tests with `./mvnw test`.
 
 The header (magic, version, salt) is passed to GCM as *additional authenticated data*. It isn't encrypted, but changing it also breaks the tag. The version byte means the format can be changed later without breaking old vaults.
 
-**Decrypted data stays in memory.** The CSV is built and parsed in memory (`StringWriter` / `StringReader`), and only the ciphertext is written to disk. Saving writes to a temporary file first and then atomically replaces the vault, so a crash in the middle of a save can't corrupt it. On Linux/macOS the file is only readable by the owner (`rw-------`).
+**Decrypted data stays in memory:** The CSV is built and parsed in memory (`StringWriter` / `StringReader`), and only the ciphertext is written to disk. Saving writes to a temporary file first and then atomically replaces the vault, so a crash in the middle of a save can't corrupt it. On Linux/macOS the file is only readable by the owner (`rw-------`).
 
-**Master password handling.** The password is kept as a `char[]` and overwritten with zeros right after the key is derived. While the vault is open, the app only keeps the derived key, not the password.
+**Master password handling:** The password is kept as a `char[]` and overwritten with zeros right after the key is derived. While the vault is open, the app only keeps the derived key, not the password.
+
+**Unlocking file:** read the file → take the salt from the header → derive the key → decrypt. Only if that works is the vault view opened. A wrong password keeps you on the login screen.
 
 ### What changed compared to the first version
 
-The first version used AES in **ECB mode** with a key that was just `SHA-256(password)` cut to 128 bits. ECB encrypts identical blocks to identical ciphertext, so patterns in the data stay visible. There was no salt, almost no cost per password guess, and no integrity check. Because of that, a wrong password used to open an empty vault, and the next save overwrote the real one. It also wrote the decrypted vault to a temporary plaintext file. All of this is fixed now. Old vaults from that version can't be opened anymore.
+- first version used AES in **ECB mode** with a key that was just `SHA-256(password)` cut to 128 bits. ECB encrypts identical blocks to identical ciphertext, so patterns in the data stay visible. 
+- There was no salt, almost no cost per password guess, and no integrity check. Because of that, a wrong password used to open an empty vault, and the next save overwrote the real one. It also wrote the decrypted vault to a temporary plaintext file. All of this is fixed now.
 
 ## Limitations
 
@@ -104,8 +107,6 @@ flowchart LR
     Repo -->|derive key, encrypt, decrypt| Crypto[VaultCrypto]
     Repo <-->|ciphertext only| File[(~/keyholder)]
 ```
-
-**Unlocking:** read the file → take the salt from the header → derive the key → decrypt. Only if that works is the vault view opened. A wrong password keeps you on the login screen.
 
 ## Tech stack
 
